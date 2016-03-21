@@ -3,8 +3,7 @@ services:
   postgres:
     container_name: stockdb_postgres
     image: postgres:latest
-    environment:
-      POSTGRES_PASSWORD: <パスワード>
+    env_file: .env
     ports:
       - "5432:5432"
     volumes:
