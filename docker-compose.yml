@@ -1,0 +1,11 @@
+version: '2'
+services:
+  postgres:
+    container_name: stockdb_postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: <パスワード>
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
