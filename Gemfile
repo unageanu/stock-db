@@ -4,6 +4,7 @@ ruby '2.2.3'
 
 gem 'rake'
 gem 'dotenv'
+gem 'thread'
 
 gem 'activerecord'
 gem 'pg'
