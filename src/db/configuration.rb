@@ -1,7 +1,7 @@
-require 'dotenv'
-require "active_record"
+# coding: utf-8
 
-Dotenv.load
+require 'config/load_env'
+require "active_record"
 
 ActiveRecord::Base.logger = Logger.new($stdout)
 ActiveRecord::Base.establish_connection(
