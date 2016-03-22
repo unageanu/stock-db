@@ -13,7 +13,7 @@ module StockDB
 
     def build_stocks_table
       create_table :stocks do |t|
-        t.column :code       , :integer
+        t.column :code       , :string
         t.column :name       , :string
 
         t.index :code, unique: true
