@@ -7,11 +7,15 @@ require "db/migrate/table_builder"
 require "models/stock"
 require "models/rate"
 require 'config/quandl_configuration'
+require 'httpclient'
+require 'zip'
+require "stringio"
 
 module StockDB
   class Importer
 
     TSE_CODE = 'TSE'
+    TSE_CODE_URL = 'https://www.quandl.com/api/v3/databases/TSE/codes'
     WORKER_COUNTS = 5
 
     def initialize
@@ -28,15 +32,15 @@ module StockDB
     private
 
     def fetch_stocks
-      page = 1
-      loop do
-        options = {params: { page: page }}
-        stocks = retry_five_times do
-          Quandl::Database.get(TSE_CODE).datasets(options)
+      client = HTTPClient.new
+      res = client.get("#{TSE_CODE_URL}?api_key=#{Quandl::ApiConfig.api_key}",
+        :follow_redirect => true)
+      Zip::InputStream.open(StringIO.new(res.body, 'r+')) do |io|
+        io.get_next_entry
+        io.read.each_line do |line|
+          next unless line =~ %r{TSE/([^,]+),\"?([^\"]+)}
+          yield 'dataset_code'=>$1, 'name'=>$2.strip
         end
-        return if stocks.empty?
-        stocks.each {|stock| yield stock }
-        page+=1
       end
     end
 
