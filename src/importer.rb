@@ -54,7 +54,7 @@ module StockDB
       retry_five_times do
         Quandl::Dataset.get("#{TSE_CODE}/#{stock.code}")
           .data(params: { rows: 500 })
-      end
+      end || []
     end
 
     def retry_five_times
@@ -66,6 +66,7 @@ module StockDB
           puts $!
         end
       end
+      return nil
     end
 
     def find_or_create_stock(stok_info)
