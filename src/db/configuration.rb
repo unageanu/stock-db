@@ -3,7 +3,7 @@
 require 'config/load_env'
 require "active_record"
 
-ActiveRecord::Base.logger = Logger.new($stdout)
+#ActiveRecord::Base.logger = Logger.new($stdout)
 ActiveRecord::Base.establish_connection(
   adapter:  "postgresql",
   host:     ENV['POSTGRES_HOST'] || 'localhost',
