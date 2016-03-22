@@ -74,7 +74,7 @@ module StockDB
     end
 
     def find_or_create_stock(stok_info)
-      code = stok_info['dataset_code'].to_i
+      code = stok_info['dataset_code']
       Stock.find_or_create_by(code: code) do |stock|
         stock.name = stok_info['name']
       end
