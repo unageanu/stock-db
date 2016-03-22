@@ -2,6 +2,10 @@
 
 Japanese Stock Rating Importer.
 
+## Tables
+
+![tables](tables.png)
+
 ## Pre-Requirements
 
 ```sh
