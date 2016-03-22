@@ -34,3 +34,8 @@ $ docker-compose up -d # Run PostgreSQL
 $ bundle install
 $ bundle exec ruby -I src ./src/importer.rb
 ```
+
+
+## License
+
+[MIT license](//datatables.net/license)
