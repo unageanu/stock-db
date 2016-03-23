@@ -16,17 +16,32 @@ module StockDB
 
     TSE_CODE = 'TSE'
     TSE_CODE_URL = 'https://www.quandl.com/api/v3/databases/TSE/codes'
+    NIKKEI_CODE = 'NIKKEI'
+
     WORKER_COUNTS = 5
+    RETRIEVE_COUNT = 500
 
     def initialize
       @pool = Thread.pool(WORKER_COUNTS)
     end
 
     def import
+      import_nikkei
+      import_all_stocks
+    end
+
+    def import_all_stocks
       fetch_stocks do |stock_info|
         @pool.process { import_rates(stock_info) }
       end
       @pool.shutdown
+    end
+
+    def import_nikkei
+      import_rates({
+        'dataset_code'=>'INDEX-Nikkei-Index',
+        'name'=>'The Nikkei Stock Average'
+      }, NIKKEI_CODE)
     end
 
     private
@@ -44,11 +59,11 @@ module StockDB
       end
     end
 
-    def import_rates(stock_info)
+    def import_rates(stock_info, database_code = TSE_CODE)
       puts "import #{stock_info['dataset_code']} #{stock_info['name']}"
       ActiveRecord::Base.transaction do
         stock = find_or_create_stock(stock_info)
-        fetch_rate(stock).each do |rate_info|
+        fetch_rate(stock, database_code).each do |rate_info|
           find_or_create_rate(stock.id, rate_info)
         end
       end
@@ -57,10 +72,10 @@ module StockDB
       puts $!
     end
 
-    def fetch_rate(stock)
+    def fetch_rate(stock, database_code = TSE_CODE)
       retry_five_times do
-        Quandl::Dataset.get("#{TSE_CODE}/#{stock.code}")
-          .data(params: { rows: 500 })
+        data = Quandl::Dataset.get("#{database_code}/#{stock.code}")
+          .data(params: { rows: RETRIEVE_COUNT })
       end || []
     end
 
@@ -88,18 +103,20 @@ module StockDB
       #puts "  #{rate_info['date']} #{rate_info['open']} #{rate_info['close']}"
       attributes = { stock_id:stock_id, date: rate_info['date'] }
       Rate.find_or_create_by(attributes) do |rate|
-        rate.open   = rate_info['open']
-        rate.close  = rate_info['close']
-        rate.high   = rate_info['high']
-        rate.low    = rate_info['low']
+        rate.open   = rate_info['open']  || rate_info['open_price']
+        rate.close  = rate_info['close'] || rate_info['close_price']
+        rate.high   = rate_info['high']  || rate_info['high_price']
+        rate.low    = rate_info['low']   || rate_info['low_price']
         rate.volume = rate_info['volume'].to_i || 0
       end
     end
 
     def valid_rate?(rate_info)
-      rate_info['open'] && rate_info['close'] \
-        && rate_info['high'] && rate_info['low'] \
-        && rate_info['date']
+      ( rate_info['open']     || rate_info['open_price'] )  \
+      && ( rate_info['close'] || rate_info['close_price'] ) \
+      && ( rate_info['high']  || rate_info['high_price'] )  \
+      && ( rate_info['low']   || rate_info['low_price'] )   \
+      && rate_info['date']
     end
 
   end
