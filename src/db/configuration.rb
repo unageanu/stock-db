@@ -10,7 +10,8 @@ config = {
   database: "stockdb",
   port:     ENV['POSTGRES_PORT'] || 5432,
   username: ENV['POSTGRES_USER'] || 'postgres',
-  password: ENV['POSTGRES_PASSWORD'] || 'mysecretpassword'
+  password: ENV['POSTGRES_PASSWORD'] || 'mysecretpassword',
+  pool: 10
 }
 begin
   ActiveRecord::Base.establish_connection(config)

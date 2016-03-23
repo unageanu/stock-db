@@ -52,6 +52,9 @@ module StockDB
           find_or_create_rate(stock.id, rate_info)
         end
       end
+    rescue
+      puts '*** import failed.'
+      puts $!
     end
 
     def fetch_rate(stock)
