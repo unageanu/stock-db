@@ -28,7 +28,7 @@ module StockDB
 
     def import_data(date)
       puts "import #{date}"
-      data = retry_five_times { fetch_csv(date) } || []
+      data = retry_five_times { fetch_csv(date) } || ""
       d = data.lines.first.encode("UTF-8", "Shift_JIS").strip
       return if d != date.strftime("%Y年%m月%d日")
       stocks = import_stocks(data)
@@ -46,7 +46,7 @@ module StockDB
       url = "#{KDB_URL}/#{date.strftime("%Y-%m-%d")}?download=csv"
       res = @client.get(url, :follow_redirect => true)
       return if res.status == 404
-      raise res.status unless res.status == 200 # for retry
+      raise("#{res.status} #{res.body.to_s}") unless res.status == 200 # for retry
       res.body
     end
 
