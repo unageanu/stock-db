@@ -32,7 +32,7 @@ QUANDL_API_VERSION=2015-04-09
 ---
 $ docker-compose up -d # Run PostgreSQL
 $ bundle install
-$ bundle exec ruby -I src ./src/importer.rb
+$ bundle exec ruby -I src ./src/quandl_importer.rb
 ```
 
 
