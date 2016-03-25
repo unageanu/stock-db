@@ -19,6 +19,7 @@ module StockDB
     def import(start_date, end_date)
       pool = Thread.pool(WORKER_COUNTS)
       end_date.downto(start_date) do |date|
+        next if date.wday == 0 || date.wday == 6
         pool.process { import_data(date) }
       end
       pool.shutdown
