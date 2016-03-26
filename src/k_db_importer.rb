@@ -63,6 +63,7 @@ module StockDB
     def import_rates(date, line, stocks)
       steps = parse_line(line)
       return unless steps
+      return if steps[8].to_i == 0
 
       stock = stocks[steps[0]]
       find_or_create_rate(stock.id, {
