@@ -95,6 +95,3 @@ module StockDB
 
   end
 end
-
-StockDB::TableBuilder.new.build_tables
-StockDB::KDBImporter.new.import(Date.parse(ARGV[0]), Date.parse(ARGV[1]))
