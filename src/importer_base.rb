@@ -6,6 +6,7 @@ require "db/configuration"
 require "db/migrate/table_builder"
 require "models/stock"
 require "models/rate"
+require "models/stock_lending"
 require 'httpclient'
 
 module StockDB
@@ -21,6 +22,13 @@ module StockDB
         end
       end
       return nil
+    end
+
+    def each_weekday(start_date, end_date)
+      end_date.downto(start_date) do |date|
+        next if date.wday == 0 || date.wday == 6
+        yield date
+      end
     end
 
     def find_or_create_stock(stok_info)
