@@ -1,6 +1,7 @@
 # StockDB
 
-日本の株式情報を収集し、ローカルのデータベースに取り込むツールセットです。
+日本株式の情報を収集し、ローカルのデータベースに取り込むツールセットです。
+
 以下のデータを収集可能です。
 
 - 日本株式のレートデータ
@@ -45,7 +46,7 @@ $ bundle exec ruby -I src ./src/quandl_importer.rb
 # or
 $ bundle exec ruby -I src ./src/k_db_importer.rb 2016-01-01 2016-03-01
 
-# 信用取引残高
+# 信用取引残高の取り込み
 $ bundle exec ruby -I src ./src/stock_lending_importer.rb 2016-01-01 2016-03-01
 ```
 
