@@ -1,6 +1,12 @@
 # StockDB
 
-Japanese Stock Rating Importer.
+日本の株式情報を収集し、ローカルのデータベースに取り込むツールセットです。
+以下のデータを収集可能です。
+
+- 日本株式のレートデータ
+  - Quandl, k-db.comからの取得に対応しています。
+- 信用取引残高
+  - 日証金から日ごとのデータを取得します。
 
 ## Tables
 
@@ -30,12 +36,17 @@ POSTGRES_PASSWORD=mysecretpassword
 QUANDL_API_KEY=myquandlapikey
 QUANDL_API_VERSION=2015-04-09
 ---
-$ docker-compose up -d # Run PostgreSQL
+$ docker-compose up -d # PostgreSQL を起動
+
 $ bundle install
 
+# 日本株式のレートデータの取り込み
 $ bundle exec ruby -I src ./src/quandl_importer.rb
 # or
 $ bundle exec ruby -I src ./src/k_db_importer.rb 2016-01-01 2016-03-01
+
+# 信用取引残高
+$ bundle exec ruby -I src ./src/stock_lending_importer.rb 2016-01-01 2016-03-01
 ```
 
 
