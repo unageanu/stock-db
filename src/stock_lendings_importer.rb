@@ -70,7 +70,7 @@ module StockDB
       return nil if pcsl.nil? || balance.nil?
       map = pcsl.lines.each_with_object({}) do |line, r|
         steps = line.encode("UTF-8", "Shift_JIS").split(',')
-        next unless steps[0] =~ /\d+/
+        next unless steps.length >= 12 && steps[2] =~ /^\d+$/
         r[steps[2]] = {
           'dataset_code'  => steps[2],
           'name'          => steps[3],
@@ -86,7 +86,7 @@ module StockDB
       end
       balance.lines.each_with_object(map) do |line, r|
         steps = line.encode("UTF-8", "Shift_JIS").split(',')
-        next unless steps[1] =~ /\d+/
+        next unless steps.length >= 10 && steps[2] =~ /^\d+$/
         (r[steps[2]] || r[steps[2]] = {}).merge!({
           'dataset_code'      => steps[2],
           'name'              => steps[3],
